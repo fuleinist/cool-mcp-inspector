@@ -1,0 +1,25 @@
+{
+  "name": "cool-mcp-inspector",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Visual inspector and testing playground for MCP servers",
+  "workspaces": [
+    "packages/client",
+    "packages/server"
+  ],
+  "scripts": {
+    "dev:server": "cd packages/server && npm run dev",
+    "dev:client": "cd packages/client && npm run dev",
+    "dev": "npm run dev:server & npm run dev:client",
+    "build": "npm run build --workspaces",
+    "build:server": "cd packages/server && npm run build",
+    "build:client": "cd packages/client && npm run build"
+  },
+  "keywords": ["mcp", "debugger", "inspector", "model-context-protocol"],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fuleinist/cool-mcp-inspector.git"
+  }
+}

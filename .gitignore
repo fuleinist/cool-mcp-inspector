@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+.DS_Store
+*.local
+packages/server/data/
+packages/client/.vite/
