@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/types.ts","./src/components/jsoneditor.tsx","./src/components/requestbuilder.tsx","./src/components/responsetracer.tsx","./src/components/serverlist.tsx","./src/components/toolbrowser.tsx"],"version":"5.9.3"}

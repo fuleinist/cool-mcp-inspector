@@ -235,6 +235,19 @@ app.get('/api/prompts', async (_req, res) => {
   }
 });
 
+app.post('/api/prompts/call', async (req, res) => {
+  if (!mcpClient) return res.status(400).json({ error: 'Not connected' });
+  const { name, arguments: args = {} } = req.body;
+  const start = Date.now();
+  try {
+    const result = await mcpClient.getPrompt({ name, arguments: args });
+    res.json({ ok: true, prompt: result, durationMs: Date.now() - start });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    res.status(500).json({ error: msg, durationMs: Date.now() - start });
+  }
+});
+
 // --- History API ---
 
 app.get('/api/history', (_req, res) => {
