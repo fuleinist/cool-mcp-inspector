@@ -29,6 +29,16 @@ export default function ResponseTracer({ traces }: Props) {
     <div className="flex flex-col h-full">
       <div className="px-3 py-2 border-b border-border flex items-center justify-between">
         <span className="text-xs font-mono text-text-muted uppercase tracking-wider">Trace ({traces.length})</span>
+        {traces.length > 0 && (
+          <button
+            onClick={() => {
+              fetch('/api/history', { method: 'DELETE' });
+              window.location.reload();
+            }}
+            className="text-xs text-text-muted hover:text-error transition-colors"
+            title="Clear history"
+          >✕ Clear</button>
+        )}
       </div>
       <input
         value={filter}
