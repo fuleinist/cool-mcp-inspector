@@ -15,18 +15,11 @@ export default function App() {
   const [traces, setTraces] = useState<TraceEntry[]>([]);
   const [activeTab, setActiveTab] = useState<'tools' | 'resources' | 'prompts'>('tools');
   const [selectedTool, setSelectedTool] = useState<MCPTool | null>(null);
-  const [ws, setWs] = useState<WebSocket | null>(null);
 
-  // Load initial data
+  // Load initial data + open live trace stream
   useEffect(() => {
     fetchServers();
     fetchHistory();
-    connectWs();
-    return () => ws?.close();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  function connectWs() {
     const socket = new WebSocket(`ws://${window.location.host}/ws`);
     socket.onmessage = (ev) => {
       const data = JSON.parse(ev.data);
@@ -41,8 +34,9 @@ export default function App() {
         setTraces(prev => [data.entry, ...prev].slice(0, 200));
       }
     };
-    setWs(socket);
-  }
+    return () => socket.close();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function fetchServers() {
     const res = await fetch(`${API}/api/servers`);
