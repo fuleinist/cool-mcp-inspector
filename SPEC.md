@@ -69,8 +69,8 @@
 - Loading state with abort option
 
 ### Response Tracer
-- Chronological list of request/response pairs
-- Each entry shows: timestamp, tool name, request JSON, response JSON, duration
+- Chronological list of request/response pairs (covers both `tools/call` and `prompts/call`)
+- Each entry shows: timestamp, call name, request JSON, response JSON, duration
 - Expandable entries
 - Color-coded: success (green border), error (red border)
 - Copy button per entry
@@ -87,8 +87,9 @@
 - Click to see prompt arguments and preview
 
 ### History
-- All requests persisted to `~/.mcp-inspector/history.json`
-- Searchable by tool name or request content
+- All tool calls and prompt calls persisted to `~/.mcp-inspector/history.json`
+- Searchable by call name or request content
+- Capped at 500 entries (oldest dropped first)
 
 ## 5. Component Inventory
 
@@ -142,7 +143,7 @@ MCP Server (user's actual server)
 
 The backend Node process:
 1. Spawns MCP server as child process via stdio (or connects via SSE if HTTP)
-2. Proxies `tools/call`, `tools/list`, `resources/list`, `resources/read`, `prompts/list` to the connected server
+2. Proxies `tools/call`, `tools/list`, `resources/list`, `resources/read`, `prompts/list`, `prompts/get` to the connected server
 3. Streams trace events to frontend via WebSocket
 4. Persists history to `~/.mcp-inspector/history.json`
 

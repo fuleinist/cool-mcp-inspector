@@ -238,13 +238,38 @@ app.get('/api/prompts', async (_req, res) => {
 app.post('/api/prompts/call', async (req, res) => {
   if (!mcpClient) return res.status(400).json({ error: 'Not connected' });
   const { name, arguments: args = {} } = req.body;
+
+  const entry: TraceEntry = {
+    id: randomUUID(),
+    timestamp: new Date().toISOString(),
+    serverId: currentServerId!,
+    tool: name,
+    request: args,
+    response: null,
+    durationMs: 0,
+    status: 'success',
+  };
+
   const start = Date.now();
   try {
     const result = await mcpClient.getPrompt({ name, arguments: args });
-    res.json({ ok: true, prompt: result, durationMs: Date.now() - start });
+    entry.durationMs = Date.now() - start;
+    entry.response = result;
+    entry.status = 'success';
+    const history = loadHistory();
+    history.unshift(entry);
+    saveHistory(history.slice(0, 500));
+    broadcast({ type: 'trace', entry });
+    res.json({ ok: true, prompt: result, durationMs: entry.durationMs });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
-    res.status(500).json({ error: msg, durationMs: Date.now() - start });
+    entry.durationMs = Date.now() - start;
+    entry.response = err instanceof Error ? err.message : String(err);
+    entry.status = 'error';
+    const history = loadHistory();
+    history.unshift(entry);
+    saveHistory(history.slice(0, 500));
+    broadcast({ type: 'trace', entry });
+    res.status(500).json({ error: entry.response, durationMs: entry.durationMs });
   }
 });
 
