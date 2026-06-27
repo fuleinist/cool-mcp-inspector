@@ -112,7 +112,7 @@ app.post('/api/connect/:id', async (req, res) => {
 
     const parts = config.command.split(' ');
     const cmd = parts[0];
-    const args = parts.slice(1);
+    const args = config.args ?? parts.slice(1);
 
     const transport = new StdioClientTransport({ command: cmd, args, env: config.env });
 
