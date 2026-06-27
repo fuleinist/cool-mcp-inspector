@@ -110,9 +110,10 @@ app.post('/api/connect/:id', async (req, res) => {
       currentServerId = null;
     }
 
-    const parts = config.command.split(' ');
-    const cmd = parts[0];
-    const args = parts.slice(1);
+    const cmd = config.command;
+    // Prefer explicit `args` array (preserves quoted args like paths with spaces);
+    // fall back to splitting `command` for legacy configs that embed args in it.
+    const args = config.args ?? config.command.split(' ').slice(1);
 
     const transport = new StdioClientTransport({ command: cmd, args, env: config.env });
 
